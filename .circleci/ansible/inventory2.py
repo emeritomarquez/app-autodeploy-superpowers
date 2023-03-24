@@ -61,7 +61,7 @@ for line in lines:
     elif line == "54.149.54.106\n":
         pass
 #Cloud9 Public
-    elif line == "35.87.69.23\n":
+    elif line == "35.93.84.240\n":
         pass
 #Windows MySQL
     elif line == "18.237.95.113\n":
