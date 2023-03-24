@@ -282,6 +282,7 @@ jobs:
           command: |
             cd backend
             npm install
+            npm audit fix
             npm run migrations > ~/project/.circleci/ansible/migrations_dump.txt 2>  ~/project/.circleci/ansible/migrations_err.txt
             cat ~/project/.circleci/ansible/migrations_dump.txt
             cat ~/project/.circleci/ansible/migrations_err.txt
