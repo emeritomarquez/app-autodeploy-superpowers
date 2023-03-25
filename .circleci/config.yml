@@ -272,7 +272,7 @@ jobs:
 
   run-migrations:
     docker:
-      - image: circleci/node:13.8.0 # Docker image here that supports NodeJS
+      - image: circleci/node:14.18.1 # Docker image here that supports NodeJS
     steps:
       - checkout   # checkout Checkout code from git
       - restore_cache:
@@ -282,8 +282,6 @@ jobs:
           command: |
             cd backend
             npm install
-            npm audit fix
-            npm audit fix --force
             npm run migrations > ~/project/.circleci/ansible/migrations_dump.txt 2>  ~/project/.circleci/ansible/migrations_err.txt
             cat ~/project/.circleci/ansible/migrations_dump.txt
             cat ~/project/.circleci/ansible/migrations_err.txt
