@@ -474,6 +474,35 @@ jobs:
       - revert-migrations:
           workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
 
+  cleanup:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: |
+            yum -y install tar
+            yum -y install gzip
+      - run:
+          name: Get old id and Remove old stacks and files
+          command: |
+            export OldWorkflowID="kk1j287dhjppmz591"
+            export STACKS=($(aws cloudformation list-stacks --query "StackSummaries[*].StackName" \
+              --stack-status-filter CREATE_COMPLETE --no-paginate --output text))
+            echo Stack names: "${STACKS[@]}"
+            if [[ "${CIRCLE_WORKFLOW_ID:0:7}" != "${OldWorkflowID}" ]]
+            then
+              echo "Cleaning in progress"
+              echo old workflow id: ${OldWorkflowID}
+              echo current workflow id: "${CIRCLE_WORKFLOW_ID:0:7}"
+              aws s3 rm "s3://udapeople-${OldWorkflowIiD}" --recursive --include "*" --include "images/*"
+              echo "Cleaning Done"
+            else
+              echo "No cleanup required---"
+            fi
+
+
 workflows:
   default:
     jobs:
