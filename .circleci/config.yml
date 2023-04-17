@@ -496,7 +496,7 @@ jobs:
               echo "Cleaning in progress"
               echo old workflow id: ${OldWorkflowID}
               echo current workflow id: "${CIRCLE_WORKFLOW_ID:0:7}"
-              aws s3 rm "s3://udapeople-${OldWorkflowIiD}" --recursive --include "*" --include "images/*"
+              aws s3 rm "s3://udapeople-${OldWorkflowID}" --recursive --include "*" --include "images/*"
               echo "Cleaning Done"
             else
               echo "No cleanup required---"
