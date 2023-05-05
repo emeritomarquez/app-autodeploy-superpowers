@@ -238,9 +238,10 @@ jobs:
       - run:
           name: Configure server
           command: |
-            ansible-playbook -i  ~/project/.circleci/ansible/inventory1.txt --private-key=~/project/.circleci/ansible/udapeople.pem  ~/project/.circleci/ansible/main.yml
-#            exit 1
-      # Here's where you will add some code to rollback on failure
+            cd .circleci/ansible
+            ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i  ~/project/.circleci/ansible/inventory1.txt --private-key=~/project/.circleci/ansible/udapeople.pem  ~/project/.circleci/ansible/configure-server.yml
+#            exit 1      
+            # Here's where you will add some code to rollback on failure
 
       - destroy-environment:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
@@ -258,15 +259,18 @@ jobs:
           command: |
             cd backend
             npm install
-#            npm audit fix --audit-level=critical --force
-            # If the "npm audit fix" command above could not fix all critical vulnerabilities, try “npm audit fix --force” again
-#            npm audit fix --force
-#            npm audit --audit-level=critical
-#            npm audit fix
-            # Run and save the migration output
-            #            npm run migrations > ~/project/.circleci/ansible/migrations_dump.txt 2> ~/project/.circleci/ansible/migrations_err.txt
+            npm run migrations > ~/project/.circleci/ansible/migrations_dump.txt 2> ~/project/.circleci/ansible/migrations_err.txt
+            cat ~/project/.circleci/ansible/migrations_dump.txt
+            cat ~/project/.circleci/ansible/migrations_err.txt
+      - run:
+          name: Send migration status to kvdb.io OR memstash.io
+          command: |
+            if grep -q "has been executed successfully." ~/project/.circleci/ansible/migrations_dump.txt
+            then
+            curl https://kvdb.io/H7MB23gL5pTNunVjb7aKYp/migration_${CIRCLE_WORKFLOW_ID:0:7} -d "1"
+            fi
 
-#      - npm-migration-errlog
+      - npm-migration-errlog
 
   deploy-frontend:
     docker:
@@ -440,8 +444,8 @@ jobs:
             aws cloudformation deploy \
               --template-file .circleci/files/cloudfront.yml \
               --stack-name udapeopleStack \
-              --parameter-overrides WorkflowID="${CIRCLE_WORKFLOW_ID:0:7}"
-            echo workflow id: "${CIRCLE_WORKFLOW_ID:0:7}"
+              --parameter-overrides WorkflowID="${CIRCLE_WORKFLOW_ID:0:7}.s3.amazonaws.com
+          echo workflow id: "${CIRCLE_WORKFLOW_ID:0:7}"
       - destroy-environment:
           workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
           event: on_fail
