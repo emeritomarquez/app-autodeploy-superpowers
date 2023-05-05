@@ -226,11 +226,13 @@ jobs:
           at: ~/
       - run: cat ~/project/.circleci/ansible/inventory1.txt
       - add_ssh_keys:
-        fingerprints: ["10:3b:72:f2:5e:80:49:a9:b0:49:a5:81:d1:0c:12:0a"]
+          fingerprints: ["10:3b:72:f2:5e:80:49:a9:b0:49:a5:81:d1:0c:12:0a"]
       - run:
           name: Install dependencies
           command:
+             # install the dependencies needed for your playbook
             apk add --update ansible
+#            exit 1
       - run: ls -al  /etc
       - run: chmod 400 ~/project/.circleci/ansible/udapeople.pem
       - run:
@@ -238,13 +240,15 @@ jobs:
           command: |
             cd .circleci/ansible
             ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i  ~/project/.circleci/ansible/inventory1.txt --private-key=~/project/.circleci/ansible/udapeople.pem  ~/project/.circleci/ansible/configure-server.yml
+#            exit 1
+      # Here's where you will add some code to rollback on failure
 
       - destroy-environment:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
           event: on_fail
 
   run-migrations:
-    docker:
+          docker:
      - image: circleci/node:13.8.0 # Docker image here that supports NodeJS
     steps:
       - checkout   # checkout Checkout code from git
