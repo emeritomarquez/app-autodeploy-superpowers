@@ -98,11 +98,11 @@ jobs:
 
   test-frontend:
     docker:
-      - image: circleci/node:13.8.0
+       - image: circleci/node:13.8.0
     steps:
       - checkout
       - restore_cache:
-          keys: [frontend-test]
+          keys: [frontend-build]
       - run:
           name: Front-end test
           command: |
@@ -113,9 +113,6 @@ jobs:
           channel: circleci-udapeople
           event: fail
           template: basic_fail_1
-      - save_cache:
-          paths: [frontend/node_modules]
-          key: frontend-build
 
   test-backend:
     docker:
@@ -123,7 +120,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          keys: [backend-test]
+          keys: [backend-build]
       - run:
           name: Back-end test
           command: |
@@ -134,9 +131,6 @@ jobs:
           channel: circleci-udapeople
           event: fail
           template: basic_fail_1
-      - save_cache:
-          paths: [backend/node_modules]
-          key: backend-build
 
   scan-frontend:
     docker:
