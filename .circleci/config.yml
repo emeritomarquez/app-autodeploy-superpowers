@@ -23,6 +23,36 @@ commands:
             aws cloudformation delete-stack --stack-name udapeople-frontend-<< parameters.workflow_id >>
 #            exit 1
 
+  npm-migration-errlog:
+    description: cat npm migration error logfile
+    steps:
+      - run:
+          name: list logfile content
+          when: on_fail
+          command: |
+            ls -al  ~/project/backend/
+            cat ~/project/.circleci/ansible/migrations_dump.txt
+            cat ~/project/.circleci/ansible/migrations_err.txt
+            python3 ~/project/.circleci/scratch-code/get_dump_files.py ~/project/.circleci/ansible/migrations_err.txt
+
+  revert-migrations:
+    description: Revert the last migration if successfully run in the current workflow.
+    parameters:
+      workflow_id:
+        type: string
+    steps:
+      - run:
+          name: Revert migrations
+          when: on_fail
+          command: |
+            SUCCESS=$(curl -k https://kvdb.io/6h9wPbrfcMHffrSixfsDx2/migration_${CIRCLE_WORKFLOW_ID:0:7})
+            echo $SUCCESS
+            if(( $SUCCESS==1 ));
+            then
+              cd ~/project/backend
+              npm install
+              npm run migrations:revert
+            fi
 
 jobs:
   build-frontend:
