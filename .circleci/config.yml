@@ -68,8 +68,6 @@ jobs:
             cd frontend
             npm install
             npm run build
-            npm audit fix
-            npm audit fix --force
       - slack/notify:
           channel: circleci-udapeople
           event: fail
@@ -91,8 +89,6 @@ jobs:
             cd backend
             npm install
             npm run build
-            npm audit fix
-            npm audit fix --force
       - slack/notify:
           channel: circleci-udapeople
           event: fail
