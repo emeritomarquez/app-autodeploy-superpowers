@@ -138,7 +138,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          keys: [frontend-scan]
+          keys: [frontend-build]
       - run:
           name: Front-end scan
           command: |
@@ -154,9 +154,6 @@ jobs:
           channel: circleci-udapeople
           event: fail
           template: basic_fail_1
-      - save_cache:
-          paths: [frontend/node_modules]
-          key: frontend-build
 
   scan-backend:
     docker:
@@ -164,7 +161,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          keys: [backend-scan]
+          keys: [backend-build]
       - run:
           name: Back-end scan
           command: |
@@ -180,6 +177,7 @@ jobs:
           channel: circleci-udapeople
           event: fail
           template: basic_fail_1
+
 
   deploy-infrastructure:
     docker:
