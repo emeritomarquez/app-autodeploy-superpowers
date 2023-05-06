@@ -57,6 +57,15 @@ for line in lines:
 #Ubuntu122.04 Public
     elif line == "34.222.84.173\n":
         pass
+#typeorm2
+    elif line == "54.213.45.43\n":
+        pass
+#Cloud9 Public
+    elif line == "35.93.84.240\n":
+        pass
+#Windows MySQL
+    elif line == "18.237.95.113\n":
+        pass
     else:
         rows.append(line)
 
